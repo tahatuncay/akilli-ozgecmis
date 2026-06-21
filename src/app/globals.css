@@ -1,26 +1,518 @@
 @import "tailwindcss";
 
+/* ================================================================
+   Akıllı Özgeçmiş — Global Design System
+   Premium renk paleti, Light/Dark tema desteği
+   ================================================================ */
+
+/* ---------- Light Theme (varsayılan) ---------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary — Orman / Zeytin Yeşili (Forest / Olive Green) */
+  --color-primary-50: #f1f8f1;
+  --color-primary-100: #dceede;
+  --color-primary-200: #b9ddbf;
+  --color-primary-300: #8bc498;
+  --color-primary-400: #5fa872;
+  --color-primary-500: #3d8b51;
+  --color-primary-600: #2e6e3f;
+  --color-primary-700: #265a34;
+  --color-primary-800: #1f4829;
+  --color-primary-900: #1a3b23;
+  --color-primary-950: #0d2013;
+
+  /* Secondary — Sıcak Toprak / Vizon Kahverengi */
+  --color-secondary-50: #faf6f2;
+  --color-secondary-100: #f0e6d9;
+  --color-secondary-200: #e1ccb3;
+  --color-secondary-300: #cfa985;
+  --color-secondary-400: #bf8a5e;
+  --color-secondary-500: #a87242;
+  --color-secondary-600: #8f5d36;
+  --color-secondary-700: #764b2e;
+  --color-secondary-800: #5e3c25;
+  --color-secondary-900: #4d321f;
+  --color-secondary-950: #2b1a10;
+
+  /* Accent — Yumuşak Hardal / Tereyağı Sarısı */
+  --color-accent-50: #fefce8;
+  --color-accent-100: #fef9c3;
+  --color-accent-200: #fef08a;
+  --color-accent-300: #fde047;
+  --color-accent-400: #facc15;
+  --color-accent-500: #eab308;
+  --color-accent-600: #ca8a04;
+  --color-accent-700: #a16207;
+  --color-accent-800: #854d0e;
+  --color-accent-900: #713f12;
+  --color-accent-950: #422006;
+
+  /* Neutral — Sıcak Taş Grisi (Warm Stone) */
+  --color-neutral-50: #fafaf9;
+  --color-neutral-100: #f5f5f4;
+  --color-neutral-200: #e7e5e4;
+  --color-neutral-300: #d6d3d1;
+  --color-neutral-400: #a8a29e;
+  --color-neutral-500: #78716c;
+  --color-neutral-600: #57534e;
+  --color-neutral-700: #44403c;
+  --color-neutral-800: #292524;
+  --color-neutral-900: #1c1917;
+  --color-neutral-950: #0c0a09;
+
+  /* Semantic Colors */
+  --color-success: #3d8b51;
+  --color-warning: #eab308;
+  --color-error: #dc2626;
+  --color-info: #2563eb;
+
+  /* Surface & Background — Kırık beyaz / Off-white */
+  --background: #fefdfb;
+  --background-secondary: #faf8f5;
+  --background-tertiary: #f5f2ed;
+  --foreground: #1c1917;
+  --foreground-secondary: #57534e;
+  --foreground-muted: #a8a29e;
+
+  /* Card & Surface */
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --surface-overlay: rgba(254, 253, 251, 0.85);
+
+  /* Border */
+  --border: #e7e5e4;
+  --border-hover: #d6d3d1;
+  --border-focus: #eab308;
+
+  /* Ring (focus) */
+  --ring: #eab308;
+  --ring-offset: #fefdfb;
+
+  /* Shadow */
+  --shadow-color: 30 10% 20%;
+  --shadow-sm: 0 1px 2px 0 hsl(var(--shadow-color) / 0.05);
+  --shadow-md: 0 4px 6px -1px hsl(var(--shadow-color) / 0.07), 0 2px 4px -2px hsl(var(--shadow-color) / 0.04);
+  --shadow-lg: 0 10px 15px -3px hsl(var(--shadow-color) / 0.07), 0 4px 6px -4px hsl(var(--shadow-color) / 0.04);
+  --shadow-xl: 0 20px 25px -5px hsl(var(--shadow-color) / 0.07), 0 8px 10px -6px hsl(var(--shadow-color) / 0.04);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(254, 253, 251, 0.75);
+  --glass-border: rgba(231, 229, 228, 0.4);
+  --glass-blur: 12px;
+
+  /* Gradient */
+  --gradient-primary: linear-gradient(135deg, #3d8b51 0%, #2e6e3f 50%, #265a34 100%);
+  --gradient-secondary: linear-gradient(135deg, #a87242 0%, #8f5d36 100%);
+  --gradient-accent: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+  --gradient-surface: linear-gradient(180deg, #fefdfb 0%, #faf8f5 100%);
+  --gradient-hero: linear-gradient(135deg, #3d8b51 0%, #a87242 100%);
+
+  /* Spacing & Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Transition */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* ---------- Dark Theme ---------- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Primary — Yeşil (parlak dark-mode tonları) */
+    --color-primary-50: #0d2013;
+    --color-primary-100: #1a3b23;
+    --color-primary-200: #1f4829;
+    --color-primary-300: #265a34;
+    --color-primary-400: #3d8b51;
+    --color-primary-500: #5fa872;
+    --color-primary-600: #8bc498;
+    --color-primary-700: #b9ddbf;
+    --color-primary-800: #dceede;
+    --color-primary-900: #f1f8f1;
+    --color-primary-950: #f8fcf8;
+
+    /* Surface & Background */
+    --background: #0c0a09;
+    --background-secondary: #1c1917;
+    --background-tertiary: #292524;
+    --foreground: #fafaf9;
+    --foreground-secondary: #d6d3d1;
+    --foreground-muted: #78716c;
+
+    /* Card & Surface */
+    --surface: #1c1917;
+    --surface-elevated: #292524;
+    --surface-overlay: rgba(28, 25, 23, 0.8);
+
+    /* Border */
+    --border: #292524;
+    --border-hover: #44403c;
+    --border-focus: #eab308;
+
+    /* Ring */
+    --ring: #eab308;
+    --ring-offset: #0c0a09;
+
+    /* Shadow */
+    --shadow-color: 20 20% 5%;
+    --shadow-sm: 0 1px 2px 0 hsl(var(--shadow-color) / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(var(--shadow-color) / 0.4), 0 2px 4px -2px hsl(var(--shadow-color) / 0.3);
+    --shadow-lg: 0 10px 15px -3px hsl(var(--shadow-color) / 0.4), 0 4px 6px -4px hsl(var(--shadow-color) / 0.3);
+    --shadow-xl: 0 20px 25px -5px hsl(var(--shadow-color) / 0.5), 0 8px 10px -6px hsl(var(--shadow-color) / 0.4);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(28, 25, 23, 0.7);
+    --glass-border: rgba(41, 37, 36, 0.5);
+    --glass-blur: 16px;
+
+    /* Gradient */
+    --gradient-primary: linear-gradient(135deg, #5fa872 0%, #8bc498 50%, #b9ddbf 100%);
+    --gradient-secondary: linear-gradient(135deg, #bf8a5e 0%, #cfa985 100%);
+    --gradient-accent: linear-gradient(135deg, #facc15 0%, #fde047 100%);
+    --gradient-surface: linear-gradient(180deg, #1c1917 0%, #0c0a09 100%);
+    --gradient-hero: linear-gradient(135deg, #5fa872 0%, #bf8a5e 100%);
   }
+}
+
+/* Kullanıcı tercihi ile dark mode (class-based, ileride toggle için) */
+.dark {
+  --color-primary-50: #0d2013;
+  --color-primary-100: #1a3b23;
+  --color-primary-200: #1f4829;
+  --color-primary-300: #265a34;
+  --color-primary-400: #3d8b51;
+  --color-primary-500: #5fa872;
+  --color-primary-600: #8bc498;
+  --color-primary-700: #b9ddbf;
+  --color-primary-800: #dceede;
+  --color-primary-900: #f1f8f1;
+  --color-primary-950: #f8fcf8;
+
+  --background: #0c0a09;
+  --background-secondary: #1c1917;
+  --background-tertiary: #292524;
+  --foreground: #fafaf9;
+  --foreground-secondary: #d6d3d1;
+  --foreground-muted: #78716c;
+
+  --surface: #1c1917;
+  --surface-elevated: #292524;
+  --surface-overlay: rgba(28, 25, 23, 0.8);
+
+  --border: #292524;
+  --border-hover: #44403c;
+  --border-focus: #eab308;
+
+  --ring: #eab308;
+  --ring-offset: #0c0a09;
+
+  --shadow-color: 20 20% 5%;
+  --shadow-sm: 0 1px 2px 0 hsl(var(--shadow-color) / 0.3);
+  --shadow-md: 0 4px 6px -1px hsl(var(--shadow-color) / 0.4), 0 2px 4px -2px hsl(var(--shadow-color) / 0.3);
+  --shadow-lg: 0 10px 15px -3px hsl(var(--shadow-color) / 0.4), 0 4px 6px -4px hsl(var(--shadow-color) / 0.3);
+  --shadow-xl: 0 20px 25px -5px hsl(var(--shadow-color) / 0.5), 0 8px 10px -6px hsl(var(--shadow-color) / 0.4);
+
+  --glass-bg: rgba(28, 25, 23, 0.7);
+  --glass-border: rgba(41, 37, 36, 0.5);
+  --glass-blur: 16px;
+
+  --gradient-primary: linear-gradient(135deg, #5fa872 0%, #8bc498 50%, #b9ddbf 100%);
+  --gradient-secondary: linear-gradient(135deg, #bf8a5e 0%, #cfa985 100%);
+  --gradient-accent: linear-gradient(135deg, #facc15 0%, #fde047 100%);
+  --gradient-surface: linear-gradient(180deg, #1c1917 0%, #0c0a09 100%);
+  --gradient-hero: linear-gradient(135deg, #5fa872 0%, #bf8a5e 100%);
+}
+
+/* ================================================================
+   Tailwind v4 — @theme ile özel token'lar
+   ================================================================ */
+@theme inline {
+  /* Font */
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+
+  /* Colors — Tailwind sınıflarında kullanılabilir: bg-primary-500, text-neutral-700 vb. */
+  --color-primary-50: var(--color-primary-50);
+  --color-primary-100: var(--color-primary-100);
+  --color-primary-200: var(--color-primary-200);
+  --color-primary-300: var(--color-primary-300);
+  --color-primary-400: var(--color-primary-400);
+  --color-primary-500: var(--color-primary-500);
+  --color-primary-600: var(--color-primary-600);
+  --color-primary-700: var(--color-primary-700);
+  --color-primary-800: var(--color-primary-800);
+  --color-primary-900: var(--color-primary-900);
+  --color-primary-950: var(--color-primary-950);
+
+  --color-secondary-50: var(--color-secondary-50);
+  --color-secondary-100: var(--color-secondary-100);
+  --color-secondary-200: var(--color-secondary-200);
+  --color-secondary-300: var(--color-secondary-300);
+  --color-secondary-400: var(--color-secondary-400);
+  --color-secondary-500: var(--color-secondary-500);
+  --color-secondary-600: var(--color-secondary-600);
+  --color-secondary-700: var(--color-secondary-700);
+  --color-secondary-800: var(--color-secondary-800);
+  --color-secondary-900: var(--color-secondary-900);
+  --color-secondary-950: var(--color-secondary-950);
+
+  --color-accent-50: var(--color-accent-50);
+  --color-accent-100: var(--color-accent-100);
+  --color-accent-200: var(--color-accent-200);
+  --color-accent-300: var(--color-accent-300);
+  --color-accent-400: var(--color-accent-400);
+  --color-accent-500: var(--color-accent-500);
+  --color-accent-600: var(--color-accent-600);
+  --color-accent-700: var(--color-accent-700);
+  --color-accent-800: var(--color-accent-800);
+  --color-accent-900: var(--color-accent-900);
+  --color-accent-950: var(--color-accent-950);
+
+  --color-neutral-50: var(--color-neutral-50);
+  --color-neutral-100: var(--color-neutral-100);
+  --color-neutral-200: var(--color-neutral-200);
+  --color-neutral-300: var(--color-neutral-300);
+  --color-neutral-400: var(--color-neutral-400);
+  --color-neutral-500: var(--color-neutral-500);
+  --color-neutral-600: var(--color-neutral-600);
+  --color-neutral-700: var(--color-neutral-700);
+  --color-neutral-800: var(--color-neutral-800);
+  --color-neutral-900: var(--color-neutral-900);
+  --color-neutral-950: var(--color-neutral-950);
+
+  /* Semantic */
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+  --color-info: var(--color-info);
+
+  /* Surface aliases */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
+}
+
+/* ================================================================
+   Base Styles
+   ================================================================ */
+
+*,
+*::before,
+*::after {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  transition: background-color var(--transition-slow), color var(--transition-slow);
+}
+
+/* ================================================================
+   Selection & Scrollbar
+   ================================================================ */
+
+::selection {
+  background-color: var(--color-primary-500);
+  color: #ffffff;
+}
+
+/* Özel scrollbar (Webkit) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-400);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-500);
+}
+
+/* ================================================================
+   Focus Styles (Erişilebilirlik)
+   ================================================================ */
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ================================================================
+   Utility Classes
+   ================================================================ */
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+.gradient-primary {
+  background: var(--gradient-primary);
+}
+
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shadow-card {
+  box-shadow: var(--shadow-md);
+}
+
+.shadow-card-hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Animasyon yardımcıları */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--background-secondary) 25%,
+    var(--background-tertiary) 50%,
+    var(--background-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ================================================================
+   Print Styles — Vektörel PDF Çıktısı (window.print)
+   Sadece CV önizlemesini gösterir, UI'ı gizler.
+   ================================================================ */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0mm !important; /* Tarayıcı header/footer yazılarını gizler */
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+  
+  /* Site arayüzünü gizle — sadece site layout elementlerini hedefle, CV şablon içeriklerini DEĞİL */
+  #main-header,
+  #main-footer,
+  aside,
+  nav:not(.print-container nav) {
+    display: none !important;
+  }
+
+  /* print:hidden sınıfına sahip elementleri gizle (indirme butonu vb.) */
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Remove all margins, paddings and background from the preview container and parents */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: white !important;
+    border: none !important;
+  }
+
+  .print-container {
+    padding: 0 !important; /* Şablonların kendi iç padding'leri kullanılacak (full bleed desteklemek için) */
+    box-sizing: border-box !important;
+    width: 210mm !important;
+    min-height: 297mm !important; /* En az A4 boyutu, ama uzayabilir */
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Force print colors */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
 }

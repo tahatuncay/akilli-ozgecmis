@@ -93,10 +93,11 @@ export async function POST(req: Request) {
     }
 
     const formData = await req.formData();
+    const cvTextForm = formData.get("cvText") as string | null;
     const file = formData.get("file") as File | null;
     const jobDescription = formData.get("jobDescription") as string | null;
 
-    if (!file) {
+    if (!cvTextForm && !file) {
       return Response.json(
         { error: "Lütfen bir CV dosyası yükleyin." },
         { status: 400 }
@@ -110,36 +111,22 @@ export async function POST(req: Request) {
       );
     }
 
-    // Dosyadan metin çıkar
-    let cvText = "";
-    const fileType = file.name.toLowerCase();
-
-    if (fileType.endsWith(".txt")) {
-      cvText = await file.text();
-    } else if (fileType.endsWith(".pdf")) {
-      const { PDFParse } = await import("pdf-parse");
-      const path = await import("path");
-      const workerPath = "file://" + path.resolve(process.cwd(), "node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs");
-      PDFParse.setWorker(workerPath);
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = new PDFParse({ 
-        data: new Uint8Array(arrayBuffer),
-        useWorkerFetch: false,
-        isOffscreenCanvasSupported: false,
-        isImageDecoderSupported: false,
-        disableFontFace: true,
-      });
-      const textResult = await pdf.getText();
-      cvText = textResult.text;
-      await pdf.destroy();
-    } else {
-      return Response.json(
-        {
-          error:
-            "Desteklenmeyen dosya formatı. Lütfen PDF veya TXT dosyası yükleyin.",
-        },
-        { status: 400 }
-      );
+    // Metni al (istemciden doğrudan cvText olarak geldiyse onu kullan, yoksa txt ise oku)
+    let cvText = cvTextForm || "";
+    
+    if (!cvText && file) {
+      const fileType = file.name.toLowerCase();
+      if (fileType.endsWith(".txt")) {
+        cvText = await file.text();
+      } else {
+        return Response.json(
+          {
+            error:
+              "Desteklenmeyen dosya formatı veya sunucuda PDF işleme kapalı. Lütfen PDF okumayı istemci tarafında yapın.",
+          },
+          { status: 400 }
+        );
+      }
     }
 
     if (!cvText.trim()) {
@@ -176,16 +163,37 @@ ${cvText.substring(0, 8000)}
 ${jobDescription.substring(0, 4000)}
 `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: atsResultSchema,
-      },
-    });
+    let response;
+    let retries = 3;
+    let delay = 1500; // Başlangıç gecikmesi: 1.5 saniye
 
-    const resultText = response.text || "";
+    while (retries > 0) {
+      try {
+        response = await ai.models.generateContent({
+          model: "gemini-2.5-flash",
+          contents: prompt,
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: atsResultSchema,
+          },
+        });
+        break; // Başarılı olursa döngüden çık
+      } catch (err: any) {
+        const isRetryable = err?.status === 503 || err?.status === 429 || err?.message?.includes("503") || err?.message?.includes("429") || err?.message?.includes("UNAVAILABLE") || err?.message?.includes("high demand");
+        
+        if (isRetryable && retries > 1) {
+          console.warn(`Gemini API yoğunluğu/limiti (${err?.status || 'Bilinmeyen Durum'}). ${delay}ms beklenip tekrar denenecek. Kalan deneme: ${retries - 1}`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          retries--;
+          delay *= 2; // Bekleme süresini katlayarak artır (1.5s -> 3s)
+        } else {
+          // Deneme hakkı bittiğinde veya farklı bir hata olduğunda fırlat
+          throw err;
+        }
+      }
+    }
+
+    const resultText = response?.text || "";
 
     let result;
     try {
@@ -198,8 +206,21 @@ ${jobDescription.substring(0, 4000)}
     }
 
     return Response.json({ result });
-  } catch (error) {
+  } catch (error: any) {
     console.error("ATS Analysis Error:", error);
+    
+    // Hata hala API yoğunluğuyla ilgiliyse kullanıcıya dostça bir mesaj döndür
+    const isOverloaded = error?.status === 503 || error?.status === 429 || error?.message?.includes("503") || error?.message?.includes("UNAVAILABLE") || error?.message?.includes("high demand");
+    
+    if (isOverloaded) {
+      return Response.json(
+        {
+          error: "Yapay zeka analiz motorumuz şu anda geçici bir yoğunluk yaşıyor. Lütfen birkaç dakika bekleyip tekrar deneyin.",
+        },
+        { status: 503 }
+      );
+    }
+
     return Response.json(
       {
         error:

@@ -1,9 +1,14 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
 import { cn } from "@/lib/utils";
+
+const PDFProcessor = dynamic(() => import("@/components/pdf/PDFProcessor"), {
+  ssr: false,
+});
 
 interface CategoryScores {
   keywordMatch: number;
@@ -38,6 +43,8 @@ export default function ATSAnalysisPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<ATSResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [cvText, setCvText] = useState<string | null>(null);
+  const [isExtractingPDF, setIsExtractingPDF] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -55,6 +62,14 @@ export default function ATSAnalysisPage() {
     setFile(selectedFile);
     setError(null);
     setResult(null);
+    setCvText(null);
+    
+    if (name.endsWith(".txt")) {
+      setIsExtractingPDF(false);
+      selectedFile.text().then(text => setCvText(text)).catch(() => setError("TXT dosyası okunamadı."));
+    } else if (name.endsWith(".pdf")) {
+      setIsExtractingPDF(true);
+    }
   }, []);
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -85,13 +100,22 @@ export default function ATSAnalysisPage() {
       return;
     }
 
+    if (isExtractingPDF) {
+      setError("PDF dosyası işleniyor, lütfen bekleyin...");
+      return;
+    }
+
     setIsAnalyzing(true);
     setError(null);
     setResult(null);
 
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      if (cvText) {
+        formData.append("cvText", cvText);
+      } else {
+        formData.append("file", file);
+      }
       formData.append("jobDescription", jobDescription);
 
       const response = await fetch("/api/ats-analyze", {
@@ -152,6 +176,19 @@ export default function ATSAnalysisPage() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-[var(--background-secondary)] py-12 px-4 sm:px-6 lg:px-8 animate-fade-in">
+      {file && isExtractingPDF && file.name.toLowerCase().endsWith('.pdf') && (
+        <PDFProcessor 
+          file={file} 
+          onExtracted={(text) => {
+            setCvText(text);
+            setIsExtractingPDF(false);
+          }}
+          onError={(err) => {
+            setError(err);
+            setIsExtractingPDF(false);
+          }}
+        />
+      )}
       <div className="max-w-7xl mx-auto space-y-12">
         
         {/* Page Header */}
@@ -205,7 +242,9 @@ export default function ATSAnalysisPage() {
                     <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                   </div>
                   <div>
-                    <p className="font-medium text-emerald-700 dark:text-emerald-400">Dosya Hazır</p>
+                    <p className="font-medium text-emerald-700 dark:text-emerald-400">
+                      {isExtractingPDF ? "PDF İşleniyor..." : "Dosya Hazır"}
+                    </p>
                     <p className="text-sm text-neutral-500 truncate max-w-[260px] mt-1">{file.name}</p>
                     <p className="text-xs text-neutral-400 mt-0.5">{formatFileSize(file.size)}</p>
                   </div>
@@ -243,7 +282,7 @@ export default function ATSAnalysisPage() {
         <div className="flex justify-center">
           <Button 
             onClick={startAnalysis}
-            disabled={isAnalyzing || !file || !jobDescription.trim()}
+            disabled={isAnalyzing || !file || !jobDescription.trim() || isExtractingPDF}
             className={cn(
               "h-14 px-10 text-lg rounded-full shadow-lg transition-all border-none font-bold",
               isAnalyzing 
@@ -256,7 +295,7 @@ export default function ATSAnalysisPage() {
                 <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-neutral-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 Yapay Zeka Analiz Ediyor...
               </span>
-            ) : "🔍 ATS Uyumluluğunu Analiz Et"}
+            ) : isExtractingPDF ? "PDF İşleniyor..." : "🔍 ATS Uyumluluğunu Analiz Et"}
           </Button>
         </div>
 

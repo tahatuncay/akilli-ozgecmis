@@ -173,16 +173,25 @@ function cvReducer(state: CVData, action: CVAction): CVData {
         .trim();
 
       // Deneyimleri CVData formatına dönüştür
-      const newExperiences: Experience[] = (li.experience || []).map((exp) => ({
-        id: crypto.randomUUID(),
-        company: exp.company || "",
-        position: exp.position || "",
-        startDate: exp.startDate || "",
-        endDate: exp.endDate || "",
-        isCurrentJob: !exp.endDate,
-        description: exp.description || "",
-        highlights: [],
-      }));
+      const newExperiences: Experience[] = (li.experience || []).map((exp) => {
+        const rawEndDate = (exp.endDate || "").trim();
+        const isCurrent = 
+          !rawEndDate || 
+          rawEndDate.toLowerCase().includes("present") || 
+          rawEndDate.toLowerCase().includes("devam") ||
+          rawEndDate.toLowerCase().includes("halen");
+
+        return {
+          id: crypto.randomUUID(),
+          company: exp.company || "",
+          position: exp.position || "",
+          startDate: exp.startDate || "",
+          endDate: isCurrent ? "" : rawEndDate,
+          isCurrentJob: isCurrent,
+          description: exp.description || "",
+          highlights: [],
+        };
+      });
 
       // Eğitimleri CVData formatına dönüştür
       const newEducation: Education[] = (li.education || []).map((edu) => ({

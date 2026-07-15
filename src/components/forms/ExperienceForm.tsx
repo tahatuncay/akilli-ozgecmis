@@ -158,8 +158,12 @@ export function ExperienceForm() {
                         type="checkbox"
                         checked={exp.isCurrentJob}
                         onChange={(e) => {
-                          handleUpdateExperience(exp.id, "isCurrentJob", e.target.checked);
-                          if (e.target.checked) handleUpdateExperience(exp.id, "endDate", "");
+                          const isChecked = e.target.checked;
+                          const updatedExp = { ...exp, isCurrentJob: isChecked };
+                          if (isChecked) {
+                            updatedExp.endDate = "";
+                          }
+                          dispatch({ type: "UPDATE_EXPERIENCE", payload: updatedExp });
                         }}
                         className="rounded border-[var(--border)] text-primary-600 focus:ring-primary-500"
                       />

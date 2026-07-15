@@ -12,6 +12,8 @@ import { EducationForm } from "@/components/forms/EducationForm";
 import { SkillsForm } from "@/components/forms/SkillsForm";
 import { LanguagesForm } from "@/components/forms/LanguagesForm";
 import { CertificatesForm } from "@/components/forms/CertificatesForm";
+import { LinkedInImport } from "@/components/forms/LinkedInImport";
+import { KariyernetImport } from "@/components/forms/KariyernetImport";
 import { TemplateSelector } from "@/components/cv-preview/TemplateSelector";
 import { CVPreview } from "@/components/cv-preview/CVPreview";
 
@@ -69,6 +71,12 @@ export default function CreateCVPage() {
         
         {/* Template Selector */}
         <TemplateSelector />
+
+        {/* PDF Import Buttons (LinkedIn + Kariyer.net) */}
+        <div className="mb-6 grid grid-cols-1 gap-3">
+          <LinkedInImport />
+          <KariyernetImport />
+        </div>
 
         {/* Header & Progress */}
         <div className="mb-8 space-y-4">

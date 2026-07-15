@@ -30,6 +30,38 @@ const initialCVState: CVData = {
 };
 
 // Actions
+// LinkedIn'den ayrıştırılan ham veri tipi
+export interface LinkedInParsedData {
+  personalInfo: {
+    firstName: string;
+    lastName: string;
+    title: string;
+    email: string;
+    phone: string;
+  };
+  experience: Array<{
+    company: string;
+    position: string;
+    startDate: string;
+    endDate: string;
+    description: string;
+  }>;
+  education: Array<{
+    school: string;
+    degree: string;
+    fieldOfStudy: string;
+    startDate: string;
+    endDate: string;
+  }>;
+  skills: string[];
+  languages: string[];
+  certifications?: Array<{
+    name: string;
+    issuer: string;
+    date: string;
+  }>;
+}
+
 export type CVAction =
   | { type: "LOAD_DATA"; payload: CVData }
   | { type: "UPDATE_PERSONAL_INFO"; payload: Partial<PersonalInfo> }
@@ -50,7 +82,8 @@ export type CVAction =
   | { type: "ADD_CERTIFICATE"; payload: Certificate }
   | { type: "UPDATE_CERTIFICATE"; payload: Certificate }
   | { type: "REMOVE_CERTIFICATE"; payload: string }
-  | { type: "UPDATE_TEMPLATE"; payload: string };
+  | { type: "UPDATE_TEMPLATE"; payload: string }
+  | { type: "IMPORT_LINKEDIN_DATA"; payload: LinkedInParsedData };
 
 // Reducer
 function cvReducer(state: CVData, action: CVAction): CVData {
@@ -130,6 +163,76 @@ function cvReducer(state: CVData, action: CVAction): CVData {
         createdAt: updateTime(),
         updatedAt: updateTime(),
       };
+    case "IMPORT_LINKEDIN_DATA": {
+      const li = action.payload;
+
+      // fullName: firstName + lastName birleştirme
+      const fullName = [li.personalInfo.firstName, li.personalInfo.lastName]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+
+      // Deneyimleri CVData formatına dönüştür
+      const newExperiences: Experience[] = (li.experience || []).map((exp) => ({
+        id: crypto.randomUUID(),
+        company: exp.company || "",
+        position: exp.position || "",
+        startDate: exp.startDate || "",
+        endDate: exp.endDate || "",
+        isCurrentJob: !exp.endDate,
+        description: exp.description || "",
+        highlights: [],
+      }));
+
+      // Eğitimleri CVData formatına dönüştür
+      const newEducation: Education[] = (li.education || []).map((edu) => ({
+        id: crypto.randomUUID(),
+        institution: edu.school || "",
+        degree: edu.degree || "",
+        field: edu.fieldOfStudy || "",
+        startDate: edu.startDate || "",
+        endDate: edu.endDate || "",
+      }));
+
+      // Yetenekleri CVData formatına dönüştür
+      const newSkills: Skill[] = (li.skills || []).map((skillName) => ({
+        id: crypto.randomUUID(),
+        name: skillName,
+        level: "intermediate" as const,
+      }));
+
+      // Dilleri CVData formatına dönüştür
+      const newLanguages: Language[] = (li.languages || []).map((langName) => ({
+        id: crypto.randomUUID(),
+        name: langName,
+        proficiency: "B2" as const,
+      }));
+
+      // Sertifikaları CVData formatına dönüştür
+      const newCertificates: Certificate[] = (li.certifications || []).map((cert) => ({
+        id: crypto.randomUUID(),
+        name: cert.name || "",
+        issuer: cert.issuer || "",
+        date: cert.date || "",
+      }));
+
+      return {
+        ...state,
+        personalInfo: {
+          ...state.personalInfo,
+          ...(fullName && { fullName }),
+          ...(li.personalInfo.title && { title: li.personalInfo.title }),
+          ...(li.personalInfo.email && { email: li.personalInfo.email }),
+          ...(li.personalInfo.phone && { phone: li.personalInfo.phone }),
+        },
+        experiences: newExperiences.length > 0 ? newExperiences : state.experiences,
+        education: newEducation.length > 0 ? newEducation : state.education,
+        skills: newSkills.length > 0 ? newSkills : state.skills,
+        languages: newLanguages.length > 0 ? newLanguages : state.languages,
+        certificates: newCertificates.length > 0 ? newCertificates : state.certificates,
+        updatedAt: updateTime(),
+      };
+    }
     default:
       return state;
   }

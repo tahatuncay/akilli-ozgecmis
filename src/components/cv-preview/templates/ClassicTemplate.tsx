@@ -4,6 +4,23 @@ interface Props {
   data: CVData;
 }
 
+const SKILL_LEVEL_MAP: Record<string, string> = {
+  beginner: "Başlangıç",
+  intermediate: "Orta",
+  advanced: "İleri",
+  expert: "Uzman",
+};
+
+const LANG_LEVEL_MAP: Record<string, string> = {
+  A1: "A1",
+  A2: "A2",
+  B1: "B1",
+  B2: "B2",
+  C1: "C1",
+  C2: "C2",
+  native: "Anadil",
+};
+
 export function ClassicTemplate({ data }: Props) {
   const { personalInfo, summary, experiences, education, skills, languages, certificates } = data;
 
@@ -92,7 +109,7 @@ export function ClassicTemplate({ data }: Props) {
               <h3 className="text-sm font-bold uppercase border-b border-[#d1d5db] mb-2 pb-1">Yetenekler</h3>
               <ul className="list-disc list-inside flex flex-col gap-1">
                 {skills.map((skill) => (
-                  <li key={skill.id}>{skill.name} <span className="text-[#6b7280] text-[10px]">({skill.level})</span></li>
+                  <li key={skill.id}>{skill.name} <span className="text-[#6b7280] text-[10px]">({SKILL_LEVEL_MAP[skill.level] || skill.level})</span></li>
                 ))}
               </ul>
             </section>
@@ -106,7 +123,7 @@ export function ClassicTemplate({ data }: Props) {
                 {languages.map((lang) => (
                   <li key={lang.id} className="flex justify-between">
                     <span>{lang.name}</span>
-                    <span className="text-[#6b7280] text-[10px]">{lang.proficiency}</span>
+                    <span className="text-[#6b7280] text-[10px]">{LANG_LEVEL_MAP[lang.proficiency] || lang.proficiency}</span>
                   </li>
                 ))}
               </ul>

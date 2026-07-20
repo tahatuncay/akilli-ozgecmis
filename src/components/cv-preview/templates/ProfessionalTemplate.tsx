@@ -4,6 +4,16 @@ interface Props {
   data: CVData;
 }
 
+const LANG_LEVEL_MAP: Record<string, string> = {
+  A1: "A1",
+  A2: "A2",
+  B1: "B1",
+  B2: "B2",
+  C1: "C1",
+  C2: "C2",
+  native: "Anadil",
+};
+
 export function ProfessionalTemplate({ data }: Props) {
   const { personalInfo, summary, experiences, education, skills, languages, certificates } = data;
 
@@ -97,8 +107,9 @@ export function ProfessionalTemplate({ data }: Props) {
                   <h3 className="text-xs font-bold uppercase tracking-widest text-gray-900 border-b border-gray-300 pb-2 mb-3">Yabancı Diller</h3>
                   <ul className="flex flex-col gap-1.5">
                     {languages.map((lang) => (
-                      <li key={lang.id} className="flex justify-between items-center text-gray-800 font-medium">
-                        {lang.name} <span className="text-gray-500 text-[10px]">{lang.proficiency}</span>
+                      <li key={lang.id} className="flex justify-between items-center">
+                        <span className="text-gray-800">{lang.name}</span>
+                        <span className="text-gray-500 text-[10px]">{LANG_LEVEL_MAP[lang.proficiency] || lang.proficiency}</span>
                       </li>
                     ))}
                   </ul>

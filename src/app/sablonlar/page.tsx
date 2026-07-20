@@ -16,6 +16,7 @@ import { CVData } from "@/types/cv";
 const mockCVData: CVData = {
   id: "mock",
   templateId: "modern",
+  primaryColor: "#0f766e",
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   personalInfo: {

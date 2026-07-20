@@ -4,6 +4,23 @@ interface Props {
   data: CVData;
 }
 
+const SKILL_LEVEL_MAP: Record<string, string> = {
+  beginner: "Başlangıç",
+  intermediate: "Orta",
+  advanced: "İleri",
+  expert: "Uzman",
+};
+
+const LANG_LEVEL_MAP: Record<string, string> = {
+  A1: "A1",
+  A2: "A2",
+  B1: "B1",
+  B2: "B2",
+  C1: "C1",
+  C2: "C2",
+  native: "Anadil",
+};
+
 export function MinimalTemplate({ data }: Props) {
   const { personalInfo, summary, experiences, education, skills, languages, certificates } = data;
 
@@ -94,10 +111,10 @@ export function MinimalTemplate({ data }: Props) {
               <div className="flex-1">
                 <ul className="flex flex-col gap-1.5 text-[#525252]">
                   {skills.map((skill) => (
-                    <li key={skill.id} className="flex justify-between">
-                      <span>{skill.name}</span>
-                      <span className="text-[#a3a3a3]">{skill.level}</span>
-                    </li>
+                    <div key={skill.id} className="flex justify-between items-center text-[10px]">
+                      <span className="font-medium">{skill.name}</span>
+                      <span className="text-[#a3a3a3]">{SKILL_LEVEL_MAP[skill.level] || skill.level}</span>
+                    </div>
                   ))}
                 </ul>
               </div>
@@ -107,10 +124,10 @@ export function MinimalTemplate({ data }: Props) {
               <div className="flex-1">
                 <ul className="flex flex-col gap-1.5 text-[#525252]">
                   {languages.map((lang) => (
-                    <li key={lang.id} className="flex justify-between">
-                      <span>{lang.name}</span>
-                      <span className="text-[#a3a3a3]">{lang.proficiency}</span>
-                    </li>
+                    <div key={lang.id} className="flex justify-between items-center text-[10px]">
+                      <span className="font-medium">{lang.name}</span>
+                      <span className="text-[#a3a3a3]">{LANG_LEVEL_MAP[lang.proficiency] || lang.proficiency}</span>
+                    </div>
                   ))}
                 </ul>
               </div>

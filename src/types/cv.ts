@@ -86,6 +86,7 @@ export interface CVData {
   projects: Project[];
   references: Reference[];
   templateId: string;
+  primaryColor: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -25,6 +25,7 @@ const initialCVState: CVData = {
   projects: [],
   references: [],
   templateId: "modern",
+  primaryColor: "#0f766e",
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };
@@ -83,6 +84,7 @@ export type CVAction =
   | { type: "UPDATE_CERTIFICATE"; payload: Certificate }
   | { type: "REMOVE_CERTIFICATE"; payload: string }
   | { type: "UPDATE_TEMPLATE"; payload: string }
+  | { type: "UPDATE_PRIMARY_COLOR"; payload: string }
   | { type: "IMPORT_LINKEDIN_DATA"; payload: LinkedInParsedData };
 
 // Reducer
@@ -94,6 +96,8 @@ function cvReducer(state: CVData, action: CVAction): CVData {
       return action.payload;
     case "UPDATE_TEMPLATE":
       return { ...state, templateId: action.payload, updatedAt: updateTime() };
+    case "UPDATE_PRIMARY_COLOR":
+      return { ...state, primaryColor: action.payload, updatedAt: updateTime() };
     case "UPDATE_PERSONAL_INFO":
       return {
         ...state,

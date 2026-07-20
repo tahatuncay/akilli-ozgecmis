@@ -1,21 +1,13 @@
 import { CVData } from "@/types/cv";
+import { getLabels } from "@/lib/i18n";
 
 interface Props {
   data: CVData;
 }
 
-const LANG_LEVEL_MAP: Record<string, string> = {
-  A1: "A1",
-  A2: "A2",
-  B1: "B1",
-  B2: "B2",
-  C1: "C1",
-  C2: "C2",
-  native: "Anadil",
-};
-
 export function CreativeTemplate({ data }: Props) {
   const { personalInfo, summary, experiences, education, skills, languages, certificates } = data;
+  const labels = getLabels(data.cvLanguage);
 
   return (
     <div className="w-full min-h-full bg-white text-gray-800 p-0 font-sans flex flex-col text-[11px]">
@@ -33,8 +25,8 @@ export function CreativeTemplate({ data }: Props) {
             </div>
           )}
           <div className="flex flex-col">
-            <h1 className="text-4xl font-black tracking-tight mb-1">{personalInfo.fullName || "İsim Soyisim"}</h1>
-            <h2 className="text-xl font-medium text-white/90 mb-4">{personalInfo.title || "Meslek / Ünvan"}</h2>
+            <h1 className="text-4xl font-black tracking-tight mb-1">{personalInfo.fullName || labels.fullNamePlaceholder}</h1>
+            <h2 className="text-xl font-medium text-white/90 mb-4">{personalInfo.title || labels.titlePlaceholder}</h2>
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-white/80 text-[10px] font-medium">
               {personalInfo.email && <span className="flex items-center gap-1">✉ {personalInfo.email}</span>}
               {personalInfo.phone && <span className="flex items-center gap-1">☎ {personalInfo.phone}</span>}
@@ -55,7 +47,7 @@ export function CreativeTemplate({ data }: Props) {
             <section className="bg-white p-5 rounded-2xl shadow-md border border-gray-100">
               <h3 className="text-sm font-bold text-indigo-600 mb-3 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center">👤</span> 
-                Hakkımda
+                {labels.about}
               </h3>
               <p className="leading-relaxed text-gray-600">{summary}</p>
             </section>
@@ -66,7 +58,7 @@ export function CreativeTemplate({ data }: Props) {
             <section className="bg-white p-5 rounded-2xl shadow-md border border-gray-100">
               <h3 className="text-sm font-bold text-purple-600 mb-4 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center">💼</span>
-                Deneyim
+                {labels.experience}
               </h3>
               <div className="flex flex-col gap-5">
                 {experiences.map((exp) => (
@@ -75,7 +67,7 @@ export function CreativeTemplate({ data }: Props) {
                     <div className="flex justify-between items-start mb-1">
                       <h4 className="font-bold text-gray-800 text-sm">{exp.position}</h4>
                       <span className="text-purple-600 font-semibold text-[10px] bg-purple-50 px-2 py-0.5 rounded-full">
-                        {exp.startDate} - {exp.isCurrentJob ? "Devam" : exp.endDate}
+                        {exp.startDate} - {exp.isCurrentJob ? labels.presentShort : exp.endDate}
                       </span>
                     </div>
                     <div className="font-medium text-gray-500 mb-2">{exp.company}</div>
@@ -91,7 +83,7 @@ export function CreativeTemplate({ data }: Props) {
             <section className="bg-white p-5 rounded-2xl shadow-md border border-gray-100">
               <h3 className="text-sm font-bold text-pink-600 mb-4 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-pink-100 flex items-center justify-center">🎓</span>
-                Eğitim
+                {labels.education}
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 {education.map((edu) => (
@@ -100,7 +92,7 @@ export function CreativeTemplate({ data }: Props) {
                     <div className="text-pink-600 font-medium mb-1">{edu.field}</div>
                     <div className="text-gray-500">{edu.institution}</div>
                     <div className="text-gray-400 text-[10px] mt-1">
-                      {edu.startDate} - {edu.endDate || "Devam"}
+                      {edu.startDate} - {edu.endDate || labels.presentShort}
                     </div>
                   </div>
                 ))}
@@ -115,7 +107,7 @@ export function CreativeTemplate({ data }: Props) {
           {/* Skills */}
           {skills.length > 0 && (
             <section>
-              <h3 className="text-sm font-bold text-gray-800 mb-3">Uzmanlık</h3>
+              <h3 className="text-sm font-bold text-gray-800 mb-3">{labels.expertise}</h3>
               <div className="flex flex-wrap gap-2">
                 {skills.map((skill) => (
                   <div key={skill.id} className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-[10px] font-medium border border-gray-200">
@@ -129,12 +121,12 @@ export function CreativeTemplate({ data }: Props) {
           {/* Languages */}
           {languages.length > 0 && (
             <section>
-              <h3 className="text-sm font-bold text-gray-800 mb-3">Diller</h3>
+              <h3 className="text-sm font-bold text-gray-800 mb-3">{labels.languages}</h3>
               <div className="flex flex-col gap-2">
                 {languages.map((lang) => (
                   <div key={lang.id} className="flex items-center justify-between px-3 py-1.5 border-b border-gray-100 last:border-0">
                     <span className="text-[11px] font-medium text-gray-700">{lang.name}</span>
-                    <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">{LANG_LEVEL_MAP[lang.proficiency] || lang.proficiency}</span>
+                    <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">{labels.langLevels[lang.proficiency] || lang.proficiency}</span>
                   </div>
                 ))}
               </div>
@@ -144,7 +136,7 @@ export function CreativeTemplate({ data }: Props) {
           {/* Certificates */}
           {certificates.length > 0 && (
             <section>
-              <h3 className="text-sm font-bold text-gray-800 mb-3">Sertifikalar</h3>
+              <h3 className="text-sm font-bold text-gray-800 mb-3">{labels.certificates}</h3>
               <div className="flex flex-col gap-3">
                 {certificates.map((cert) => (
                   <div key={cert.id} className="relative pl-3 border-l-2 border-gray-200">

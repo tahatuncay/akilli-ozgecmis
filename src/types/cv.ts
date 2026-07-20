@@ -87,6 +87,7 @@ export interface CVData {
   references: Reference[];
   templateId: string;
   primaryColor: string;
+  cvLanguage: "tr" | "en";
   createdAt: string;
   updatedAt: string;
 }

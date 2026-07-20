@@ -1,30 +1,12 @@
 import { CVData } from "@/types/cv";
+import { getLabels } from "@/lib/i18n";
 
 interface Props {
   data: CVData;
 }
 
-const SKILL_LEVEL_MAP: Record<string, string> = {
-  beginner: "Başlangıç",
-  intermediate: "Orta",
-  advanced: "İleri",
-  expert: "Uzman",
-};
-
-const LANG_LEVEL_MAP: Record<string, string> = {
-  A1: "A1",
-  A2: "A2",
-  B1: "B1",
-  B2: "B2",
-  C1: "C1",
-  C2: "C2",
-  native: "Anadil",
-};
-
 /**
- * Hex rengi HSL'ye çevirip parlaklık / opaklık varyasyonları üretir.
- * Bu sayede tek bir primaryColor'dan sidebar, border, badge gibi
- * farklı tonlar otomatik türetilir.
+ * Hex rengi RGB'ye çevirir.
  */
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const clean = hex.replace("#", "");
@@ -62,16 +44,17 @@ function darken(hex: string, amount: number): string {
 export function ModernTemplate({ data }: Props) {
   const { personalInfo, summary, experiences, education, skills, languages, certificates } = data;
   const color = data.primaryColor || "#0f766e";
+  const labels = getLabels(data.cvLanguage);
 
   // Türetilmiş renk tonları
   const sidebarBg = color;
   const sidebarBorderLight = withOpacity(lighten(color, 0.35), 0.53);
-  const textMuted = lighten(color, 0.85);      // #f0fdfa benzeri
-  const textAccent = lighten(color, 0.6);       // #99f6e4 benzeri
-  const badgeBg = darken(color, 0.25);          // #115e59 benzeri
-  const iconBubbleBg = lighten(color, 0.8);     // #ccfbf1 benzeri
-  const timelineBorder = lighten(color, 0.8);   // #ccfbf1
-  const dotColor = lighten(color, 0.3);         // #14b8a6 benzeri
+  const textMuted = lighten(color, 0.85);
+  const textAccent = lighten(color, 0.6);
+  const badgeBg = darken(color, 0.25);
+  const iconBubbleBg = lighten(color, 0.8);
+  const timelineBorder = lighten(color, 0.8);
+  const dotColor = lighten(color, 0.3);
 
   return (
     <div className="w-full bg-[#ffffff] text-[#1f2937] font-sans flex text-[10px] min-h-full">
@@ -90,7 +73,7 @@ export function ModernTemplate({ data }: Props) {
 
         {/* İletişim Bilgileri */}
         <div>
-          <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3 pb-1" style={{ borderBottom: `1px solid ${sidebarBorderLight}` }}>İletişim</h3>
+          <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3 pb-1" style={{ borderBottom: `1px solid ${sidebarBorderLight}` }}>{labels.contact}</h3>
           <div className="w-full flex flex-col gap-2.5 text-left text-[8.5px]" style={{ color: textMuted }}>
             {personalInfo.email && (
               <div className="flex items-center gap-2">
@@ -122,13 +105,13 @@ export function ModernTemplate({ data }: Props) {
         {/* Education (Left Column) */}
         {education.length > 0 && (
           <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3 pb-1" style={{ borderBottom: `1px solid ${sidebarBorderLight}` }}>Eğitim</h3>
+            <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3 pb-1" style={{ borderBottom: `1px solid ${sidebarBorderLight}` }}>{labels.education}</h3>
             <div className="flex flex-col gap-3">
               {education.map((edu) => (
                 <div key={edu.id} className="flex flex-col gap-0.5">
                   <h4 className="font-bold text-[10px] text-[#ffffff] leading-tight">{edu.degree} - {edu.field}</h4>
                   <span className="text-[9px] font-medium leading-snug" style={{ color: textMuted }}>{edu.institution}</span>
-                  <span className="text-[8px] font-semibold" style={{ color: textAccent }}>{edu.startDate} - {edu.endDate || "Devam"}</span>
+                  <span className="text-[8px] font-semibold" style={{ color: textAccent }}>{edu.startDate} - {edu.endDate || labels.presentShort}</span>
                 </div>
               ))}
             </div>
@@ -138,13 +121,13 @@ export function ModernTemplate({ data }: Props) {
         {/* Skills */}
         {skills.length > 0 && (
           <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3 pb-1" style={{ borderBottom: `1px solid ${sidebarBorderLight}` }}>Yetenekler</h3>
+            <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3 pb-1" style={{ borderBottom: `1px solid ${sidebarBorderLight}` }}>{labels.skills}</h3>
             <div className="flex flex-col gap-2.5">
               {skills.map((skill) => (
                 <div key={skill.id}>
                   <div className="flex justify-between items-center text-[9px] mb-1">
                     <span className="font-medium" style={{ color: textMuted }}>{skill.name}</span>
-                    <span className="opacity-90" style={{ color: textAccent }}>{SKILL_LEVEL_MAP[skill.level] || skill.level}</span>
+                    <span className="opacity-90" style={{ color: textAccent }}>{labels.skillLevels[skill.level] || skill.level}</span>
                   </div>
                   <div className="w-full rounded-full h-1" style={{ backgroundColor: badgeBg }}>
                     <div className="bg-[#ffffff] h-1 rounded-full" style={{ width: skill.level === 'expert' ? '100%' : skill.level === 'advanced' ? '75%' : skill.level === 'intermediate' ? '50%' : '25%' }} />
@@ -158,12 +141,12 @@ export function ModernTemplate({ data }: Props) {
         {/* Languages */}
         {languages.length > 0 && (
           <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3 pb-1" style={{ borderBottom: `1px solid ${sidebarBorderLight}` }}>Yabancı Diller</h3>
+            <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3 pb-1" style={{ borderBottom: `1px solid ${sidebarBorderLight}` }}>{labels.languages}</h3>
             <ul className="flex flex-col gap-2">
               {languages.map((lang) => (
                 <li key={lang.id} className="flex justify-between items-center text-[9px]">
                   <span className="font-medium" style={{ color: textMuted }}>{lang.name}</span>
-                  <span className="px-1.5 py-0.5 rounded font-medium" style={{ backgroundColor: badgeBg, color: textMuted }}>{LANG_LEVEL_MAP[lang.proficiency] || lang.proficiency}</span>
+                  <span className="px-1.5 py-0.5 rounded font-medium" style={{ backgroundColor: badgeBg, color: textMuted }}>{labels.langLevels[lang.proficiency] || lang.proficiency}</span>
                 </li>
               ))}
             </ul>
@@ -173,7 +156,7 @@ export function ModernTemplate({ data }: Props) {
         {/* Certificates */}
         {certificates.length > 0 && (
           <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3 pb-1" style={{ borderBottom: `1px solid ${sidebarBorderLight}` }}>Sertifikalar</h3>
+            <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3 pb-1" style={{ borderBottom: `1px solid ${sidebarBorderLight}` }}>{labels.certificates}</h3>
             <div className="flex flex-col gap-2.5">
               {certificates.map((cert) => (
                 <div key={cert.id} className="flex flex-col gap-0.5">
@@ -191,8 +174,8 @@ export function ModernTemplate({ data }: Props) {
       <div className="w-[70%] p-8 bg-[#f9fafb] flex flex-col gap-6">
         {/* Name and Title */}
         <div className="mb-2 border-b-2 border-[#e5e7eb] pb-5">
-          <h1 className="text-3xl font-black text-[#111827] tracking-tight leading-none mb-1.5">{personalInfo.fullName || "İsim Soyisim"}</h1>
-          <h2 className="text-[15px] font-semibold tracking-wide" style={{ color }}>{personalInfo.title || "Meslek / Ünvan"}</h2>
+          <h1 className="text-3xl font-black text-[#111827] tracking-tight leading-none mb-1.5">{personalInfo.fullName || labels.fullNamePlaceholder}</h1>
+          <h2 className="text-[15px] font-semibold tracking-wide" style={{ color }}>{personalInfo.title || labels.titlePlaceholder}</h2>
         </div>
 
         {/* Summary */}
@@ -202,7 +185,7 @@ export function ModernTemplate({ data }: Props) {
               <span className="w-5 h-5 rounded-full flex items-center justify-center mr-2" style={{ backgroundColor: iconBubbleBg, color }}>
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
               </span>
-              Profil
+              {labels.profile}
             </h3>
             <p className="text-[#4b5563] text-[9.5px] leading-relaxed text-justify w-full">{summary}</p>
           </section>
@@ -215,7 +198,7 @@ export function ModernTemplate({ data }: Props) {
               <span className="w-5 h-5 rounded-full flex items-center justify-center mr-2" style={{ backgroundColor: iconBubbleBg, color }}>
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
               </span>
-              İş Deneyimi
+              {labels.experience}
             </h3>
             <div className="flex flex-col gap-4 ml-2.5 pl-3.5" style={{ borderLeft: `2px solid ${timelineBorder}` }}>
               {experiences.map((exp) => (
@@ -225,7 +208,7 @@ export function ModernTemplate({ data }: Props) {
                   <div className="flex justify-between items-center mb-1 mt-0.5">
                     <span className="font-semibold text-[9.5px]" style={{ color }}>{exp.company}</span>
                     <span className="text-[#4b5563] text-[8.5px] font-medium bg-[#e5e7eb] px-1.5 py-0.5 rounded-full">
-                      {exp.startDate} - {exp.isCurrentJob ? "Devam Ediyor" : exp.endDate}
+                      {exp.startDate} - {exp.isCurrentJob ? labels.present : exp.endDate}
                     </span>
                   </div>
                   {exp.description && <p className="text-[#4b5563] text-[9.5px] mt-1.5 whitespace-pre-wrap leading-relaxed w-full">{exp.description}</p>}

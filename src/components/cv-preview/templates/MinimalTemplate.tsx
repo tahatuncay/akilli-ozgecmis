@@ -1,28 +1,13 @@
 import { CVData } from "@/types/cv";
+import { getLabels } from "@/lib/i18n";
 
 interface Props {
   data: CVData;
 }
 
-const SKILL_LEVEL_MAP: Record<string, string> = {
-  beginner: "Başlangıç",
-  intermediate: "Orta",
-  advanced: "İleri",
-  expert: "Uzman",
-};
-
-const LANG_LEVEL_MAP: Record<string, string> = {
-  A1: "A1",
-  A2: "A2",
-  B1: "B1",
-  B2: "B2",
-  C1: "C1",
-  C2: "C2",
-  native: "Anadil",
-};
-
 export function MinimalTemplate({ data }: Props) {
   const { personalInfo, summary, experiences, education, skills, languages, certificates } = data;
+  const labels = getLabels(data.cvLanguage);
 
   return (
     <div className="w-full min-h-full bg-[#ffffff] text-[#262626] p-10 font-sans flex flex-col text-[11px] max-w-3xl mx-auto tracking-wide">
@@ -31,8 +16,8 @@ export function MinimalTemplate({ data }: Props) {
       <header className="mb-8">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h1 className="text-4xl font-light tracking-widest text-[#171717] mb-2 uppercase">{personalInfo.fullName || "İsim Soyisim"}</h1>
-            <h2 className="text-sm font-medium tracking-widest text-[#737373] uppercase mb-4">{personalInfo.title || "Meslek / Ünvan"}</h2>
+            <h1 className="text-4xl font-light tracking-widest text-[#171717] mb-2 uppercase">{personalInfo.fullName || labels.fullNamePlaceholder}</h1>
+            <h2 className="text-sm font-medium tracking-widest text-[#737373] uppercase mb-4">{personalInfo.title || labels.titlePlaceholder}</h2>
           </div>
           {personalInfo.photoUrl && (
             <img
@@ -56,7 +41,7 @@ export function MinimalTemplate({ data }: Props) {
         {/* Summary */}
         {summary && (
           <section className="flex gap-8">
-            <h3 className="w-1/4 text-xs font-semibold uppercase tracking-widest text-[#a3a3a3] shrink-0">Profil</h3>
+            <h3 className="w-1/4 text-xs font-semibold uppercase tracking-widest text-[#a3a3a3] shrink-0">{labels.profile}</h3>
             <p className="w-3/4 text-[#525252] leading-loose text-justify">{summary}</p>
           </section>
         )}
@@ -64,14 +49,14 @@ export function MinimalTemplate({ data }: Props) {
         {/* Experience */}
         {experiences.length > 0 && (
           <section className="flex gap-8">
-            <h3 className="w-1/4 text-xs font-semibold uppercase tracking-widest text-[#a3a3a3] shrink-0">Deneyim</h3>
+            <h3 className="w-1/4 text-xs font-semibold uppercase tracking-widest text-[#a3a3a3] shrink-0">{labels.experience}</h3>
             <div className="w-3/4 flex flex-col gap-6">
               {experiences.map((exp) => (
                 <div key={exp.id}>
                   <div className="flex justify-between items-baseline mb-1">
                     <h4 className="font-semibold text-[#171717] text-sm">{exp.position}</h4>
                     <span className="text-[#a3a3a3] text-[10px] tracking-wider">
-                      {exp.startDate} — {exp.isCurrentJob ? "Devam" : exp.endDate}
+                      {exp.startDate} — {exp.isCurrentJob ? labels.presentShort : exp.endDate}
                     </span>
                   </div>
                   <div className="text-[#737373] mb-2">{exp.company}</div>
@@ -85,7 +70,7 @@ export function MinimalTemplate({ data }: Props) {
         {/* Education */}
         {education.length > 0 && (
           <section className="flex gap-8">
-            <h3 className="w-1/4 text-xs font-semibold uppercase tracking-widest text-[#a3a3a3] shrink-0">Eğitim</h3>
+            <h3 className="w-1/4 text-xs font-semibold uppercase tracking-widest text-[#a3a3a3] shrink-0">{labels.education}</h3>
             <div className="w-3/4 flex flex-col gap-4">
               {education.map((edu) => (
                 <div key={edu.id} className="flex justify-between items-baseline">
@@ -94,7 +79,7 @@ export function MinimalTemplate({ data }: Props) {
                     <div className="text-[#737373]">{edu.institution}</div>
                   </div>
                   <span className="text-[#a3a3a3] text-[10px] tracking-wider">
-                    {edu.startDate} — {edu.endDate || "Devam"}
+                    {edu.startDate} — {edu.endDate || labels.presentShort}
                   </span>
                 </div>
               ))}
@@ -104,7 +89,7 @@ export function MinimalTemplate({ data }: Props) {
 
         {/* Skills & Languages Row */}
         <div className="flex gap-8">
-          <h3 className="w-1/4 text-xs font-semibold uppercase tracking-widest text-[#a3a3a3] shrink-0">Yetenekler</h3>
+          <h3 className="w-1/4 text-xs font-semibold uppercase tracking-widest text-[#a3a3a3] shrink-0">{labels.skills}</h3>
           
           <div className="w-3/4 flex gap-8">
             {skills.length > 0 && (
@@ -113,7 +98,7 @@ export function MinimalTemplate({ data }: Props) {
                   {skills.map((skill) => (
                     <div key={skill.id} className="flex justify-between items-center text-[10px]">
                       <span className="font-medium">{skill.name}</span>
-                      <span className="text-[#a3a3a3]">{SKILL_LEVEL_MAP[skill.level] || skill.level}</span>
+                      <span className="text-[#a3a3a3]">{labels.skillLevels[skill.level] || skill.level}</span>
                     </div>
                   ))}
                 </ul>
@@ -126,7 +111,7 @@ export function MinimalTemplate({ data }: Props) {
                   {languages.map((lang) => (
                     <div key={lang.id} className="flex justify-between items-center text-[10px]">
                       <span className="font-medium">{lang.name}</span>
-                      <span className="text-[#a3a3a3]">{LANG_LEVEL_MAP[lang.proficiency] || lang.proficiency}</span>
+                      <span className="text-[#a3a3a3]">{labels.langLevels[lang.proficiency] || lang.proficiency}</span>
                     </div>
                   ))}
                 </ul>
@@ -138,7 +123,7 @@ export function MinimalTemplate({ data }: Props) {
         {/* Certificates */}
         {certificates.length > 0 && (
           <section className="flex gap-8">
-            <h3 className="w-1/4 text-xs font-semibold uppercase tracking-widest text-[#a3a3a3] shrink-0">Sertifikalar</h3>
+            <h3 className="w-1/4 text-xs font-semibold uppercase tracking-widest text-[#a3a3a3] shrink-0">{labels.certificates}</h3>
             <div className="w-3/4 flex flex-col gap-3">
               {certificates.map((cert) => (
                 <div key={cert.id} className="flex justify-between items-baseline">

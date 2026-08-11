@@ -20,16 +20,16 @@ const footerLinks = {
     links: [
       { href: "#", label: "CV Yazım Rehberi" },
       { href: "#", label: "Kariyer Blogu" },
-      { href: "#", label: "Sık Sorulan Sorular" },
-      { href: "#", label: "Destek" },
+      { href: "/sss", label: "Sık Sorulan Sorular" },
+      { href: "/destek", label: "Destek" },
     ],
   },
   legal: {
     title: "Yasal",
     links: [
-      { href: "#", label: "Gizlilik Politikası" },
-      { href: "#", label: "Kullanım Şartları" },
-      { href: "#", label: "Çerez Politikası" },
+      { href: "/gizlilik-politikasi", label: "Gizlilik Politikası" },
+      { href: "/kullanim-sartlari", label: "Kullanım Şartları" },
+      { href: "/cerez-politikasi", label: "Çerez Politikası" },
     ],
   },
 };

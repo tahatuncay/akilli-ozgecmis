@@ -18,9 +18,9 @@ export default function Home() {
               </div>
 
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-foreground tracking-tight leading-tight">
-                Özgeçmişiniz Akıllı <br className="hidden md:block" />
+                Her Başvuru İçin <br className="hidden md:block" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">
-                  İşiniz Garanti
+                  Kusursuz Özgeçmiş
                 </span>
               </h1>
 
